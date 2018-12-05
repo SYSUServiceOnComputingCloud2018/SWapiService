@@ -124,18 +124,163 @@ func starshipsDownload(db *bolt.DB, id int) error {
 	return nil
 }
 
+func vehicleDownload(db *bolt.DB, id int) error {
+	c := swapi.DefaultClient
+	//获得数据Person
+	vehicle, err := c.Vehicle(id)
+	if err != nil {
+		return err
+	} else if vehicle.Name == "" {
+		return errors.New("404")
+	}
+	//开始事物
+	tx, err := db.Begin(true)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	//拿到存储区buckets
+	vehicleBucket, err := tx.CreateBucketIfNotExists([]byte("Vehicle"))
+	if err != nil {
+		return err
+	}
+
+	encoded, err := json.Marshal(vehicle)
+	if err != nil {
+		return err
+	}
+
+	err = vehicleBucket.Put([]byte(strconv.Itoa(id)), encoded)
+	if err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func planetDownload(db *bolt.DB, id int) error {
+	c := swapi.DefaultClient
+	//获得数据Person
+	planet, err := c.Planet(id)
+	if err != nil {
+		return err
+	} else if planet.Name == "" {
+		return errors.New("404")
+	}
+	//开始事物
+	tx, err := db.Begin(true)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	//拿到存储区buckets
+	planetBucket, err := tx.CreateBucketIfNotExists([]byte("Planet"))
+	if err != nil {
+		return err
+	}
+
+	encoded, err := json.Marshal(planet)
+	if err != nil {
+		return err
+	}
+
+	err = planetBucket.Put([]byte(strconv.Itoa(id)), encoded)
+	if err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func speciesDownload(db *bolt.DB, id int) error {
+	c := swapi.DefaultClient
+	//获得数据Person
+	species, err := c.Species(id)
+	if err != nil {
+		return err
+	} else if species.Name == "" {
+		return errors.New("404")
+	}
+	//开始事物
+	tx, err := db.Begin(true)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	//拿到存储区buckets
+	speciesBucket, err := tx.CreateBucketIfNotExists([]byte("Species"))
+	if err != nil {
+		return err
+	}
+
+	encoded, err := json.Marshal(species)
+	if err != nil {
+		return err
+	}
+
+	err = speciesBucket.Put([]byte(strconv.Itoa(id)), encoded)
+	if err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}
+
 func main() {
 
 	db, err := bolt.Open("my.db", 0600, nil)
 	defer db.Close()
 	if err != nil {
 		log.Fatal(err)
+	}/*
+	for i := 1; i <= 88; i++ {
+		fmt.Println("People:", i)
+		if err := personDownLoad(db, i); err != nil {
+			fmt.Println(err)
+		}
+		time.Sleep(100 * time.Millisecond)
 	}
 	for i := 1; i <= 100; i++ {
-		fmt.Println(i)
-		if err := personDownLoad(db, i); err != nil {
-			log.Fatal(err)
-			break
+		fmt.Println("Planet:", i)
+		if err := planetDownload(db, i); err != nil {
+			fmt.Println(err)
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	for i := 2; i <= 100; i++ {
+		fmt.Println("Starships:", i)
+		if err := starshipsDownload(db, i); err != nil {
+			fmt.Println(err)
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	for i := 1; i <= 10; i++ {
+		fmt.Println("Film:", i)
+		if err := filmDownload(db, i); err != nil {
+			fmt.Println(err)
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	for i := 1; i <= 40; i++ {
+		fmt.Println("Species:", i)
+		if err := speciesDownload(db, i); err != nil {
+			fmt.Println(err)
+		}
+		time.Sleep(100 * time.Millisecond)
+	}*/
+	for i := 40; i <= 80; i++ {
+		fmt.Println("Vehicles:", i)
+		if err := vehicleDownload(db, i); err != nil {
+			fmt.Println(err)
 		}
 		time.Sleep(100 * time.Millisecond)
 	}
