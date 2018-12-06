@@ -1,12 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-
+	"encoding/json"
 	"github.com/SYSUServiceOnComputingCloud2018/SWapiService/dbOperator"
-	"github.com/boltdb/bolt"
 	"github.com/peterhellberg/swapi"
+	"github.com/boltdb/bolt"
 )
 
 func main() {
@@ -17,19 +16,32 @@ func main() {
 	defer db.Close()
 
 	/*
-		v, err := dbOperator.GetElementById(db, "Person", "2")
-	*/
-	v, err := dbOperator.GetElementBySearchFields(db, "Person", "Luke Skywalker")
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		var user swapi.Person
-		err = json.Unmarshal(v, &user)
+			v, err := dbOperator.GetElementById(db, "Person", "2")
+
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			fmt.Println(user)
+			var user swapi.Person
+			err = json.Unmarshal(v, &user)
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				fmt.Println(user)
+			}
+		}*/
+	v, err := dbOperator.GetElementsBySearchField(db, "Person", "Skywalker")
+	if err == nil {
+		for i := 0; i < len(v); i++ {
+			var user swapi.Person
+			err = json.Unmarshal(v[i], &user)
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				fmt.Println(user)
+			}
 		}
+	} else{
+		fmt.Println(err)
 	}
 
 	/*

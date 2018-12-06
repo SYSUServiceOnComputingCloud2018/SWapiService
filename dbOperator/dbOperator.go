@@ -3,6 +3,7 @@ package dbOperator
 import (
 	"encoding/json"
 	"errors"
+	"strings"
 
 	"github.com/boltdb/bolt"
 	"github.com/peterhellberg/swapi"
@@ -24,14 +25,13 @@ func GetElementById(db *bolt.DB, blockName string, id string) ([]byte, error) {
 	return codedata, nil
 }
 
-func GetElementBySearchFields(db *bolt.DB, blockName string, value string) ([]byte, error) {
-	var codedata []byte
-	isFind := false
+func GetElementsBySearchField(db *bolt.DB, blockName string, value string) ([][]byte, error) {
+	storeData := make([][]byte, 0)
 	err := db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(blockName))
 		c := bucket.Cursor()
 
-		for k, v := c.First(); k != nil && !isFind; k, v = c.Next() {
+		for k, v := c.First(); k != nil; k, v = c.Next() {
 
 			switch blockName {
 			case "Person":
@@ -41,9 +41,8 @@ func GetElementBySearchFields(db *bolt.DB, blockName string, value string) ([]by
 					if err != nil {
 						return err
 					}
-					if data.Name == value {
-						codedata = v
-						isFind = true
+					if strings.Contains(data.Name, value) {
+						storeData = append(storeData, v)
 					}
 				}
 			}
@@ -51,11 +50,11 @@ func GetElementBySearchFields(db *bolt.DB, blockName string, value string) ([]by
 		return nil
 	})
 
-	if isFind {
-		return codedata, nil
+	if err == nil {
+		return storeData, nil
 	} else if err != nil {
-		return []byte(""), err
+		return storeData, err
 	} else {
-		return []byte(""), errors.New("Not Found.")
+		return storeData, errors.New("Not Found.")
 	}
 }
