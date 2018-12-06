@@ -45,6 +45,65 @@ func GetElementsBySearchField(db *bolt.DB, blockName string, value string) ([][]
 						storeData = append(storeData, v)
 					}
 				}
+			case "Film":
+				{
+					var data swapi.Film
+					err := json.Unmarshal(v, &data)
+					if err != nil {
+						return err
+					}
+					if strings.Contains(data.Title, value) {
+						storeData = append(storeData, v)
+					}
+				}
+			case "Starship":
+				{
+					var data swapi.Starship
+					err := json.Unmarshal(v, &data)
+					if err != nil {
+						return err
+					}
+					if strings.Contains(data.Name, value) {
+						storeData = append(storeData, v)
+					} else if strings.Contains(data.Model, value) {
+						storeData = append(storeData, v)
+					}
+				}
+			case "Vehicle":
+				{
+					var data swapi.Vehicle
+					err := json.Unmarshal(v, &data)
+					if err != nil {
+						return err
+					}
+					if strings.Contains(data.Name, value) {
+						storeData = append(storeData, v)
+					} else if strings.Contains(data.Model, value) {
+						storeData = append(storeData, v)
+					}
+				}
+			case "Planet":
+				{
+					var data swapi.Planet
+					err := json.Unmarshal(v, &data)
+					if err != nil {
+						return err
+					}
+					if strings.Contains(data.Name, value) {
+						storeData = append(storeData, v)
+					}
+				}
+			case "Species":
+				{
+					var data swapi.Species
+					err := json.Unmarshal(v, &data)
+					if err != nil {
+						return err
+					}
+					if strings.Contains(data.Name, value) {
+						storeData = append(storeData, v)
+					}
+				}
 			}
 		}
 		return nil
