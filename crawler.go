@@ -235,13 +235,13 @@ func speciesDownload(db *bolt.DB, id int) error {
 	return nil
 }
 
-func main() {
+func crawler() {
 
 	db, err := bolt.Open("my.db", 0600, nil)
 	defer db.Close()
 	if err != nil {
 		log.Fatal(err)
-	}/*
+	}
 	for i := 1; i <= 88; i++ {
 		fmt.Println("People:", i)
 		if err := personDownLoad(db, i); err != nil {
@@ -276,7 +276,7 @@ func main() {
 			fmt.Println(err)
 		}
 		time.Sleep(100 * time.Millisecond)
-	}*/
+	}
 	for i := 40; i <= 80; i++ {
 		fmt.Println("Vehicles:", i)
 		if err := vehicleDownload(db, i); err != nil {
