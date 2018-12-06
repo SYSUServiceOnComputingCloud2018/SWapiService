@@ -13,6 +13,21 @@ import (
 	"github.com/peterhellberg/swapi"
 )
 
+type Node struct {
+	Description string `json:"description"`
+	Type        string `json:"type"`
+	Format		string	`json:"format"`
+}
+
+type Schema struct {
+	Required    []string        `json:"required"`
+	Title       string          `json:"title"`
+	Properties  map[string]Node `json:"properties"`
+	Description string          `json:"description"`
+	SSchema     string          `json:"$schema"`
+	Type        string          `json:"type"`
+}
+
 func personDownLoad(db *bolt.DB, id int) error {
 	c := swapi.DefaultClient
 	//获得数据Person
@@ -235,7 +250,7 @@ func speciesDownload(db *bolt.DB, id int) error {
 	return nil
 }
 
-func crawler() {
+func CrawlData() {
 
 	db, err := bolt.Open("my.db", 0600, nil)
 	defer db.Close()
@@ -285,4 +300,17 @@ func crawler() {
 		time.Sleep(100 * time.Millisecond)
 	}
 
+}
+
+func CrawlSchema(addr string) (Schema, error) {
+	c := swapi.DefaultClient
+	req, err := c.NewRequest(fmt.Sprintf(addr))
+	if err != nil {
+		return Schema{}, err
+	}
+	var schema Schema
+	if _, err = c.Do(req, &schema); err != nil {
+		return Schema{}, err
+	}
+	return schema, nil
 }
