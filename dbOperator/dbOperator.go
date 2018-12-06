@@ -125,7 +125,7 @@ func GetAllResources(db *bolt.DB, blockName string) ([][]byte, error) {
 		c := bucket.Cursor()
 
 		for k, v := c.First(); k != nil; k, v = c.Next() {
-			storeData = append(storeData,v)
+			storeData = append(storeData, v)
 		}
 		return nil
 	})
@@ -137,4 +137,14 @@ func GetAllResources(db *bolt.DB, blockName string) ([][]byte, error) {
 	} else {
 		return storeData, errors.New("Not Found.")
 	}
+}
+
+func GetSchemaByBucket(db *bolt.DB, blockName string) ([]byte, error) {
+	var codedata []byte
+	err := db.View(func(tx *bolt.Tx) error{
+		bucket := tx.Bucket([]byte("Schema"))
+		codedata = bucket.Get([]byte(blockName))
+		return nil
+	})
+	return codedata,err
 }

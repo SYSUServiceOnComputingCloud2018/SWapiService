@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/SYSUServiceOnComputingCloud2018/SWapiService/dbOperator"
 	"github.com/boltdb/bolt"
 )
 
@@ -13,73 +14,16 @@ func main() {
 		fmt.Println(err)
 	}
 	defer db.Close()
-//爬虫相关
-	if peopleSchema, err := CrawlSchema("people/schema"); err == nil {
-		jsonCode, _ := json.Marshal(peopleSchema)
-		db.Update(func(tx *bolt.Tx) error {
-			schemaBucket, err := tx.CreateBucketIfNotExists([]byte("Schema"))
-			if err != nil {
-				return err
-			}
-			schemaBucket.Put([]byte("Person"), jsonCode)
-			return nil
-		})
+	//Schema输出
+	jsonData, _ := dbOperator.GetSchemaByBucket(db, "Person")
+	var schema Schema //定义在crawler.go中，需要使用go run service.go crawler.go
+	err = json.Unmarshal(jsonData, &schema)
+	if err == nil {
+		fmt.Println(schema)
+	} else {
+		fmt.Println(err)
 	}
-	if filmSchema, err := CrawlSchema("films/schema"); err == nil {
-		jsonCode, _ := json.Marshal(filmSchema)
-		db.Update(func(tx *bolt.Tx) error {
-			schemaBucket, err := tx.CreateBucketIfNotExists([]byte("Schema"))
-			if err != nil {
-				return err
-			}
-			schemaBucket.Put([]byte("Film"), jsonCode)
-			return nil
-		})
-	}
-	if starshipSchema, err := CrawlSchema("starships/schema"); err == nil {
-		jsonCode, _ := json.Marshal(starshipSchema)
-		db.Update(func(tx *bolt.Tx) error {
-			schemaBucket, err := tx.CreateBucketIfNotExists([]byte("Schema"))
-			if err != nil {
-				return err
-			}
-			schemaBucket.Put([]byte("Starship"), jsonCode)
-			return nil
-		})
-	}
-	if vehicleSchema, err := CrawlSchema("vehicles/schema"); err == nil {
-		jsonCode, _ := json.Marshal(vehicleSchema)
-		db.Update(func(tx *bolt.Tx) error {
-			schemaBucket, err := tx.CreateBucketIfNotExists([]byte("Schema"))
-			if err != nil {
-				return err
-			}
-			schemaBucket.Put([]byte("Vehicle"), jsonCode)
-			return nil
-		})
-	}
-	if planetSchema, err := CrawlSchema("planets/schema"); err == nil {
-		jsonCode, _ := json.Marshal(planetSchema)
-		db.Update(func(tx *bolt.Tx) error {
-			schemaBucket, err := tx.CreateBucketIfNotExists([]byte("Schema"))
-			if err != nil {
-				return err
-			}
-			schemaBucket.Put([]byte("Planet"), jsonCode)
-			return nil
-		})
-	}
-	if speciesSchema, err := CrawlSchema("species/schema"); err == nil {
-		jsonCode, _ := json.Marshal(speciesSchema)
-		db.Update(func(tx *bolt.Tx) error {
-			schemaBucket, err := tx.CreateBucketIfNotExists([]byte("Schema"))
-			if err != nil {
-				return err
-			}
-			schemaBucket.Put([]byte("Species"), jsonCode)
-			return nil
-		})
-	}
+
 	//查找单个元素
 	/*
 			v, err := dbOperator.GetElementById(db, "Person", "2")
@@ -95,7 +39,7 @@ func main() {
 				fmt.Println(user)
 			}
 		}*/
-		//查找多个元素
+	//查找多个元素
 	/*
 		v, err := dbOperator.GetElementsBySearchField(db, "Person", "Skywalker")
 		if err == nil {
