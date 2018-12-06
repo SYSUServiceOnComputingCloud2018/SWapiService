@@ -117,3 +117,24 @@ func GetElementsBySearchField(db *bolt.DB, blockName string, value string) ([][]
 		return storeData, errors.New("Not Found.")
 	}
 }
+
+func GetAllResources(db *bolt.DB, blockName string) ([][]byte, error) {
+	storeData := make([][]byte, 0)
+	err := db.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte(blockName))
+		c := bucket.Cursor()
+
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			storeData = append(storeData,v)
+		}
+		return nil
+	})
+
+	if err == nil {
+		return storeData, nil
+	} else if err != nil {
+		return storeData, err
+	} else {
+		return storeData, errors.New("Not Found.")
+	}
+}
