@@ -16,7 +16,10 @@ func main() {
 	}
 	defer db.Close()
 
-	v, err := dbOperator.GetElementById(db, "Person", "2")
+	/*
+		v, err := dbOperator.GetElementById(db, "Person", "2")
+	*/
+	v, err := dbOperator.GetElementBySearchFields(db, "Person", "Luke Skywalker")
 	if err != nil {
 		fmt.Println(err)
 	} else {
