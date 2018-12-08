@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/SYSUServiceOnComputingCloud2018/SWapiService/boltdb/service"
+	"github.com/SWapiService/boltdb/service"
 	flag "github.com/spf13/pflag"
 )
 
