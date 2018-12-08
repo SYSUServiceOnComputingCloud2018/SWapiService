@@ -1,16 +1,17 @@
 package service
 
 import (
-    "net/http"
-    "github.com/unrolled/render"
-    "encoding/json"
+	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/boltdb/dbOperator"
-	"github.com/peterhellberg/swapi"
-	"github.com/boltdb/bolt"
+	"net/http"
 
+	"github.com/SYSUServiceOnComputingCloud2018/SWapiService/boltdb/dbOperator"
+	"github.com/boltdb/bolt"
+	"github.com/gorilla/mux"
+	"github.com/peterhellberg/swapi"
+	"github.com/unrolled/render"
 )
+
 const (
 	ErrorResponseCode   = 1000 // 错误响应code
 	SuccessResponseCode = 0    // 正确响应code
@@ -24,14 +25,13 @@ type ResponseMessage struct {
 
 func rootHandler(formatter *render.Render) http.HandlerFunc {
 
-    return func(w http.ResponseWriter, req *http.Request) {
-		// 
-    }
+	return func(w http.ResponseWriter, req *http.Request) {
+		//
+	}
 }
 
+func peopleHandler(formatter *render.Render) http.HandlerFunc {
 
-func peopleHandler(formatter *render.Render) http.HandlerFunc{
-	
 	// 输出schema
 	// jsonData, _ := dbOperator.GetSchemaByBucket(db, "Person")
 	// var schema Schema //定义在crawler.go中
@@ -41,8 +41,8 @@ func peopleHandler(formatter *render.Render) http.HandlerFunc{
 	// } else {
 	// 	fmt.Println(err)
 	// }
- 
-  	return func(w http.ResponseWriter, req *http.Request) {
+
+	return func(w http.ResponseWriter, req *http.Request) {
 
 		db, err := bolt.Open("my.db", 0600, nil)
 		if err != nil {
@@ -74,7 +74,7 @@ func peopleHandler(formatter *render.Render) http.HandlerFunc{
 	}
 }
 
-func planetsHandler(formatter *render.Render) http.HandlerFunc{
+func planetsHandler(formatter *render.Render) http.HandlerFunc {
 	// 输出schema
 	// jsonData, _ := dbOperator.GetSchemaByBucket(db, "Planet")
 	// var schema Schema //定义在crawler.go中
@@ -115,29 +115,29 @@ func planetsHandler(formatter *render.Render) http.HandlerFunc{
 	}
 }
 
-func filmsHandler(formatter *render.Render) http.HandlerFunc{
-  
+func filmsHandler(formatter *render.Render) http.HandlerFunc {
+
 	return func(w http.ResponseWriter, req *http.Request) {
 		//
 	}
 }
 
-func speciesHandler(formatter *render.Render) http.HandlerFunc{
-  
+func speciesHandler(formatter *render.Render) http.HandlerFunc {
+
 	return func(w http.ResponseWriter, req *http.Request) {
 		//
 	}
 }
 
-func vehiclesHandler(formatter *render.Render) http.HandlerFunc{
-  
+func vehiclesHandler(formatter *render.Render) http.HandlerFunc {
+
 	return func(w http.ResponseWriter, req *http.Request) {
 		//
 	}
 }
 
-func starshipsHandler(formatter *render.Render) http.HandlerFunc{
-  
+func starshipsHandler(formatter *render.Render) http.HandlerFunc {
+
 	return func(w http.ResponseWriter, req *http.Request) {
 		//
 	}
