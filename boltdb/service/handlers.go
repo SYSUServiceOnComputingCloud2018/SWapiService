@@ -6,7 +6,7 @@ import (
     "encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/hansenbeast/boltdb/dbOperator"
+	"github.com/boltdb/dbOperator"
 	"github.com/peterhellberg/swapi"
 	"github.com/boltdb/bolt"
 
@@ -75,9 +75,43 @@ func peopleHandler(formatter *render.Render) http.HandlerFunc{
 }
 
 func planetsHandler(formatter *render.Render) http.HandlerFunc{
-  
+	// 输出schema
+	// jsonData, _ := dbOperator.GetSchemaByBucket(db, "Planet")
+	// var schema Schema //定义在crawler.go中
+	// err = json.Unmarshal(jsonData, &schema)
+	// if err == nil {
+	// 	fmt.Println(schema)
+	// } else {
+	// 	fmt.Println(err)
+	// }
 	return func(w http.ResponseWriter, req *http.Request) {
-		//
+		db, err := bolt.Open("my.db", 0600, nil)
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer db.Close()
+
+		// fmt.Println("URL", req.URL, "HOST", req.Host, "Method", req.Method, "RequestURL", req.RequestURI, "RawQuery", req.URL.RawQuery)
+
+		// 获取id
+		vars := mux.Vars(req)
+		id := vars["id"]
+
+		// 从db中获得Planet Struct
+		v, err := dbOperator.GetElementById(db, "Planet", id)
+		if err != nil {
+			fmt.Println(err)
+			WriteResponse(w, ErrorResponseCode, "failed", nil)
+		} else {
+			var data swapi.Planet
+			err = json.Unmarshal(v, &data)
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				fmt.Println(data.Name)
+				WriteResponse(w, SuccessResponseCode, "success", data)
+			}
+		}
 	}
 }
 
