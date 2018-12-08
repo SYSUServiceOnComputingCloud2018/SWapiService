@@ -46,19 +46,13 @@ func initRoutes(mx *mux.Router, formatter *render.Render) {
             fmt.Println(webRoot)
         }
     }
-    //使用模版
-    mx.HandleFunc("/", homeHandler(formatter)).Methods("GET")
-    // //处理简单js访问
-    // mx.HandleFunc("/api/test", apiTestHandler(formatter)).Methods("GET")
-    // //处理静态路径前缀
-    // mx.PathPrefix("/static").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(webRoot+"/assets/"))))
-    // //显示静态文件
-    // // mx.PathPrefix("/").Handler(http.FileServer(http.Dir(webRoot + "/assets/")))
-    // //提交表单，并输出一个表格
-    // mx.HandleFunc("/login", loginHandler(formatter))
-    // //对 /unknown 给出开发中的提示，返回码 5xx
-    // mx.HandleFunc("/unknown", NotImplementedHandler(formatter)).Methods("GET")
 
-    mx.HandleFunc("/api/person",perosonHandler(formatter)).Methods("GET")
+    mx.HandleFunc("/api/",rootHandler(formatter)).Methods("GET")
+    mx.HandleFunc("/api/people/{id:[0-9]+}",peopleHandler(formatter)).Methods("GET")
+    mx.HandleFunc("/api/planets/{id:[0-9]+}",planetsHandler(formatter)).Methods("GET")
+    mx.HandleFunc("/api/films/{id:[0-9]+}",filmsHandler(formatter)).Methods("GET")
+    mx.HandleFunc("/api/species/{id:[0-9]+}",speciesHandler(formatter)).Methods("GET")
+    mx.HandleFunc("/api/vehicles/{id:[0-9]+}",vehiclesHandler(formatter)).Methods("GET")
+    mx.HandleFunc("/api/starships/{id:[0-9]+}",starshipsHandler(formatter)).Methods("GET")
     
 }

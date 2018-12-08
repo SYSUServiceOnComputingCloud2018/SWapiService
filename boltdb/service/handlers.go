@@ -5,6 +5,7 @@ import (
     "github.com/unrolled/render"
     "encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/hansenbeast/boltdb/dbOperator"
 	"github.com/peterhellberg/swapi"
 	"github.com/boltdb/bolt"
@@ -21,24 +22,19 @@ type ResponseMessage struct {
 	Data    interface{} `json:"data"`
 }
 
-func homeHandler(formatter *render.Render) http.HandlerFunc {
+func rootHandler(formatter *render.Render) http.HandlerFunc {
 
     return func(w http.ResponseWriter, req *http.Request) {
-        formatter.HTML(w, http.StatusOK, "index", struct {
-            ID      string `json:"id"`
-            Content string `json:"content"`
-        }{ID: "8675309", Content: "Hello from Go!"})
+		// 
     }
 }
 
-func perosonHandler(formatter *render.Render) http.HandlerFunc{
-  
-//   j, err := json.MarshalIndent(person, "", "  ")
-//   if err == nil{
-//     fmt.Printf("%s\n", j)
-//   }
+
+func peopleHandler(formatter *render.Render) http.HandlerFunc{
+	
+	// 输出schema
 	// jsonData, _ := dbOperator.GetSchemaByBucket(db, "Person")
-	// var schema Schema //定义在crawler.go中，需要使用go run service.go crawler.go
+	// var schema Schema //定义在crawler.go中
 	// err = json.Unmarshal(jsonData, &schema)
 	// if err == nil {
 	// 	fmt.Println(schema)
@@ -53,16 +49,15 @@ func perosonHandler(formatter *render.Render) http.HandlerFunc{
 			fmt.Println(err)
 		}
 		defer db.Close()
-		
-		// decoder := json.NewDecoder(r.Body)
-		// var param GetUserParam
-		// err := decoder.Decode(&param)
-		// if err != nil {
-		// 	WriteResponse(w, ErrorResponseCode, "request param is invalid, please check!", nil)
-		// 	return
-		// }
 
-		v, err := dbOperator.GetElementById(db, "Person", "2")
+		// fmt.Println("URL", req.URL, "HOST", req.Host, "Method", req.Method, "RequestURL", req.RequestURI, "RawQuery", req.URL.RawQuery)
+
+		// 获取id
+		vars := mux.Vars(req)
+		id := vars["id"]
+
+		// 从db中获得Person Struct
+		v, err := dbOperator.GetElementById(db, "Person", id)
 		if err != nil {
 			fmt.Println(err)
 			WriteResponse(w, ErrorResponseCode, "failed", nil)
@@ -79,6 +74,40 @@ func perosonHandler(formatter *render.Render) http.HandlerFunc{
 	}
 }
 
+func planetsHandler(formatter *render.Render) http.HandlerFunc{
+  
+	return func(w http.ResponseWriter, req *http.Request) {
+		//
+	}
+}
+
+func filmsHandler(formatter *render.Render) http.HandlerFunc{
+  
+	return func(w http.ResponseWriter, req *http.Request) {
+		//
+	}
+}
+
+func speciesHandler(formatter *render.Render) http.HandlerFunc{
+  
+	return func(w http.ResponseWriter, req *http.Request) {
+		//
+	}
+}
+
+func vehiclesHandler(formatter *render.Render) http.HandlerFunc{
+  
+	return func(w http.ResponseWriter, req *http.Request) {
+		//
+	}
+}
+
+func starshipsHandler(formatter *render.Render) http.HandlerFunc{
+  
+	return func(w http.ResponseWriter, req *http.Request) {
+		//
+	}
+}
 
 func WriteResponse(w http.ResponseWriter, code int, message string, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
@@ -90,14 +119,3 @@ func WriteResponse(w http.ResponseWriter, code int, message string, data interfa
 	}
 	w.Write(b)
 }
-
-
-// func dump(data interface{}, err error)([]byte) {
-// 	if err != nil {
-// 		return
-// 	}
-
-// 	if j, err := json.MarshalIndent(data, "", "  "); err == nil {
-//     return j
-// 	}
-// }
