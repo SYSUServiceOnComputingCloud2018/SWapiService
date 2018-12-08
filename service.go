@@ -15,7 +15,13 @@ func main() {
 	}
 	defer db.Close()
 	//Schema输出
-	jsonData, _ := dbOperator.GetSchemaByBucket(db, "Person")
+	jsonData, _ := dbOperator.GetSchemaByBucket(db, "Service")
+	//jsonData, _ := dbOperator.GetSchemaByBucket(db, "People")
+	//jsonData, _ := dbOperator.GetSchemaByBucket(db, "Species")
+	//jsonData, _ := dbOperator.GetSchemaByBucket(db, "Film")
+	//jsonData, _ := dbOperator.GetSchemaByBucket(db, "Vehicle")
+	//jsonData, _ := dbOperator.GetSchemaByBucket(db, "Starship")
+
 	var schema Schema //定义在crawler.go中，需要使用go run service.go crawler.go
 	err = json.Unmarshal(jsonData, &schema)
 	if err == nil {
@@ -57,13 +63,14 @@ func main() {
 		}
 	*/
 	/*
-		n := negroni.Classic()
-		router := mux.NewRouter()
-		formatter := render.New(render.Options{
-			IndentJSON:true,
-			Directory: "file",
-			Extensions: []string{".html"},
-		})
+	n := negroni.Classic()
+	router := mux.NewRouter()
+	formatter := render.New(render.Options{
+		IndentJSON:true,
+		Directory: "file",
+		Extensions: []string{".html"},
+	})
 
-		router.HandleFUnc("/api/")*/
+	router.HandleFUnc("/api/")
+	*/
 }
