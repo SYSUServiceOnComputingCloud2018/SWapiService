@@ -90,7 +90,6 @@ func planetsHandler(formatter *render.Render) http.HandlerFunc{
 			fmt.Println(err)
 		}
 		defer db.Close()
-
 		// fmt.Println("URL", req.URL, "HOST", req.Host, "Method", req.Method, "RequestURL", req.RequestURI, "RawQuery", req.URL.RawQuery)
 
 		// 获取id
@@ -104,6 +103,40 @@ func planetsHandler(formatter *render.Render) http.HandlerFunc{
 			WriteResponse(w, ErrorResponseCode, "failed", nil)
 		} else {
 			var data swapi.Planet
+			fmt.Println(data)
+			err = json.Unmarshal(v, &data)
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				fmt.Println(data.Climate)
+				WriteResponse(w, SuccessResponseCode, "success", data)
+			}
+		}
+	}
+}
+
+func filmsHandler(formatter *render.Render) http.HandlerFunc{
+	fmt.Println("test")
+	return func(w http.ResponseWriter, req *http.Request) {
+		
+		db, err := bolt.Open("my.db", 0600, nil)
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer db.Close()
+		// fmt.Println("URL", req.URL, "HOST", req.Host, "Method", req.Method, "RequestURL", req.RequestURI, "RawQuery", req.URL.RawQuery)
+
+		// 获取id
+		vars := mux.Vars(req)
+		id := vars["id"]
+
+		// 从db中获得Planet Struct
+		v, err := dbOperator.GetElementById(db, "Film", id)
+		if err != nil {
+			fmt.Println(err)
+			WriteResponse(w, ErrorResponseCode, "failed", nil)
+		} else {
+			var data swapi.Planet
 			err = json.Unmarshal(v, &data)
 			if err != nil {
 				fmt.Println(err)
@@ -112,13 +145,6 @@ func planetsHandler(formatter *render.Render) http.HandlerFunc{
 				WriteResponse(w, SuccessResponseCode, "success", data)
 			}
 		}
-	}
-}
-
-func filmsHandler(formatter *render.Render) http.HandlerFunc{
-  
-	return func(w http.ResponseWriter, req *http.Request) {
-		//
 	}
 }
 
