@@ -51,7 +51,7 @@ func peopleHandler(formatter *render.Render) http.HandlerFunc {
 		defer db.Close()
 
 		// fmt.Println("URL", req.URL, "HOST", req.Host, "Method", req.Method, "RequestURL", req.RequestURI, "RawQuery", req.URL.RawQuery)
-
+		fmt.Println("In function people")
 		// 获取id
 		vars := mux.Vars(req)
 		id := vars["id"]
@@ -92,7 +92,7 @@ func planetsHandler(formatter *render.Render) http.HandlerFunc {
 		defer db.Close()
 
 		// fmt.Println("URL", req.URL, "HOST", req.Host, "Method", req.Method, "RequestURL", req.RequestURI, "RawQuery", req.URL.RawQuery)
-
+		fmt.Println("In function planet")
 		// 获取id
 		vars := mux.Vars(req)
 		id := vars["id"]
