@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/SYSUServiceOnComputingCloud2018/SWapiService/dbOperator"
+	"github.com/SWapiService/dbOperator"
 	"github.com/boltdb/bolt"
 )
 
