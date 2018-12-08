@@ -32,7 +32,7 @@ type Peoples struct {
 func rootHandler(formatter *render.Render) http.HandlerFunc {
 
     return func(w http.ResponseWriter, req *http.Request) {
-		
+
 		formatter.Text(w, http.StatusOK, "HTTP/1.0 "+SuccessResponseCode+" OK\n")
 		formatter.Text(w, http.StatusOK, "Content-Type: application/json\n")
 		formatter.JSON(w,http.StatusOK,struct{
@@ -53,26 +53,55 @@ func rootHandler(formatter *render.Render) http.HandlerFunc {
 
 func peopleHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 	return func(w http.ResponseWriter, req *http.Request){
-		v , err := dbOperator.GetAllResources(db,"Person")
-		users := Peoples{Count:len(v)}
-		if err == nil {
-			for i := 0; i < len(v); i++ {
-				var user swapi.Person
-				err = json.Unmarshal(v[i], &user)
-				if err != nil {
-					fmt.Println(err)
-				} else {
-					// fmt.Println(user)
-					users.Results = append(users.Results,user)
+		vars := req.URL.Query();
+		search, ok:= vars["search"]
+		if ok{
+			fmt.Printf("param 'search' string is [%s]\n", search[0])
+			v , err := dbOperator.GetElementsBySearchField(db,"Person",search[0])
+			users := Peoples{Count:len(v)}
+			if err == nil {
+				for i := 0; i < len(v); i++ {
+					var user swapi.Person
+					err = json.Unmarshal(v[i], &user)
+					if err != nil {
+						fmt.Println(err)
+					} else {
+						// fmt.Println(user)
+						users.Results = append(users.Results,user)
+					}
 				}
+				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+SuccessResponseCode+" OK\n")
+				formatter.Text(w, http.StatusOK, "Content-Type: application/json\n")
+				formatter.JSON(w,http.StatusOK,users)
+			} else{
+				fmt.Println(err)
+				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+ErrorResponseCode+" Not Found\n")
 			}
-			formatter.Text(w, http.StatusOK, "HTTP/1.0 "+SuccessResponseCode+" OK\n")
-			formatter.Text(w, http.StatusOK, "Content-Type: application/json\n")
-			formatter.JSON(w,http.StatusOK,users)
-		} else{
-			fmt.Println(err)
-		}
 
+		} else {
+			fmt.Printf("query param 'search' does not exist\n")
+			fmt.Printf("return all resources\n")
+			v , err := dbOperator.GetAllResources(db,"Person")
+			users := Peoples{Count:len(v)}
+			if err == nil {
+				for i := 0; i < len(v); i++ {
+					var user swapi.Person
+					err = json.Unmarshal(v[i], &user)
+					if err != nil {
+						fmt.Println(err)
+					} else {
+						// fmt.Println(user)
+						users.Results = append(users.Results,user)
+					}
+				}
+				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+SuccessResponseCode+" OK\n")
+				formatter.Text(w, http.StatusOK, "Content-Type: application/json\n")
+				formatter.JSON(w,http.StatusOK,users)
+			} else{
+				fmt.Println(err)
+				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+ErrorResponseCode+" Not Found\n")
+			}
+		}
 	}
 }
 

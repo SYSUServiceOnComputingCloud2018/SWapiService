@@ -55,7 +55,7 @@ func initRoutes(mx *mux.Router, formatter *render.Render) {
     }
 
     mx.HandleFunc("/api/",rootHandler(formatter)).Methods("GET")
-    mx.HandleFunc("/api/people",peopleHandler(formatter,db)).Methods("GET")
+    mx.HandleFunc("/api/people/",peopleHandler(formatter,db)).Methods("GET")
     mx.HandleFunc("/api/people/schema",peopleSchemaHandler(formatter,db)).Methods("GET")
     mx.HandleFunc("/api/people/{id:[0-9]+}/",peopleIdHandler(formatter,db)).Methods("GET")
     mx.HandleFunc("/api/planets/{id:[0-9]+}/",planetsHandler(formatter,db)).Methods("GET")

@@ -90,6 +90,8 @@ Content-Type: application/json
 
 #### 2.2 访问 people 
 
+1. 按id查询
+
 - 指令 ：
 
 `http://localhost:8080/api/people/1/`
@@ -132,6 +134,213 @@ Content-Type: application/json
   "url": "https://swapi.co/api/people/1/"
 }
 ```
+
+
+
+2. search
+
+- 指令：
+
+  `http://localhost:8080/api/people/?search=H`
+
+- 页面响应：
+
+```json
+HTTP/1.0 200 OK
+Content-Type: application/json
+{
+  "count": 2,
+  "next": "",
+  "previous": "",
+  "results": [
+    {
+      "name": "Han Solo",
+      "height": "180",
+      "mass": "80",
+      "hair_color": "brown",
+      "skin_color": "fair",
+      "eye_color": "brown",
+      "birth_year": "29BBY",
+      "gender": "male",
+      "homeworld": "https://swapi.co/api/planets/22/",
+      "films": [
+        "https://swapi.co/api/films/2/",
+        "https://swapi.co/api/films/3/",
+        "https://swapi.co/api/films/1/",
+        "https://swapi.co/api/films/7/"
+      ],
+      "species": [
+        "https://swapi.co/api/species/1/"
+      ],
+      "vehicles": [],
+      "starships": [
+        "https://swapi.co/api/starships/10/",
+        "https://swapi.co/api/starships/22/"
+      ],
+      "created": "2014-12-10T16:49:14.582000Z",
+      "edited": "2014-12-20T21:17:50.334000Z",
+      "url": "https://swapi.co/api/people/14/"
+    },
+    {
+      "name": "San Hill",
+      "height": "191",
+      "mass": "unknown",
+      "hair_color": "none",
+      "skin_color": "grey",
+      "eye_color": "gold",
+      "birth_year": "unknown",
+      "gender": "male",
+      "homeworld": "https://swapi.co/api/planets/57/",
+      "films": [
+        "https://swapi.co/api/films/5/"
+      ],
+      "species": [
+        "https://swapi.co/api/species/34/"
+      ],
+      "vehicles": [],
+      "starships": [],
+      "created": "2014-12-20T17:58:17.049000Z",
+      "edited": "2014-12-20T21:17:50.484000Z",
+      "url": "https://swapi.co/api/people/77/"
+    }
+  ]
+}
+```
+
+
+
+3. 返回所有的people
+
+- 指令：
+
+  `http://localhost:8080/api/people/`
+
+- 需要支持分页输出
+
+
+
+
+
+4. 查看schema
+
+- 指令：
+
+  `http://localhost:8080/api/people/schema`
+
+- 页面响应：
+
+```json
+HTTP/1.0 200 OK
+Content-Type: application/json
+{
+  "required": [
+    "name",
+    "height",
+    "mass",
+    "hair_color",
+    "skin_color",
+    "eye_color",
+    "birth_year",
+    "gender",
+    "homeworld",
+    "films",
+    "species",
+    "vehicles",
+    "starships",
+    "url",
+    "created",
+    "edited"
+  ],
+  "title": "People",
+  "properties": {
+    "birth_year": {
+      "description": "The birth year of this person. BBY (Before the Battle of Yavin) or ABY (After the Battle of Yavin).",
+      "type": "string",
+      "format": ""
+    },
+    "created": {
+      "description": "The ISO 8601 date format of the time that this resource was created.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "edited": {
+      "description": "the ISO 8601 date format of the time that this resource was edited.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "eye_color": {
+      "description": "The eye color of this person.",
+      "type": "string",
+      "format": ""
+    },
+    "films": {
+      "description": "An array of urls of film resources that this person has been in.",
+      "type": "array",
+      "format": ""
+    },
+    "gender": {
+      "description": "The gender of this person (if known).",
+      "type": "string",
+      "format": ""
+    },
+    "hair_color": {
+      "description": "The hair color of this person.",
+      "type": "string",
+      "format": ""
+    },
+    "height": {
+      "description": "The height of this person in meters.",
+      "type": "string",
+      "format": ""
+    },
+    "homeworld": {
+      "description": "The url of the planet resource that this person was born on.",
+      "type": "string",
+      "format": ""
+    },
+    "mass": {
+      "description": "The mass of this person in kilograms.",
+      "type": "string",
+      "format": ""
+    },
+    "name": {
+      "description": "The name of this person.",
+      "type": "string",
+      "format": ""
+    },
+    "skin_color": {
+      "description": "The skin color of this person.",
+      "type": "string",
+      "format": ""
+    },
+    "species": {
+      "description": "The url of the species resource that this person is.",
+      "type": "array",
+      "format": ""
+    },
+    "starships": {
+      "description": "An array of starship resources that this person has piloted",
+      "type": "array",
+      "format": ""
+    },
+    "url": {
+      "description": "The url of this resource",
+      "type": "string",
+      "format": "uri"
+    },
+    "vehicles": {
+      "description": "An array of vehicle resources that this person has piloted",
+      "type": "array",
+      "format": ""
+    }
+  },
+  "description": "A person within the Star Wars universe",
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "type": "object"
+}
+```
+
+
 
 
 
