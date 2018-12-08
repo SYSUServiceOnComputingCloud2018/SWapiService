@@ -6,6 +6,7 @@ import (
     "github.com/codegangsta/negroni"
     "github.com/gorilla/mux"
     "github.com/unrolled/render"
+    "github.com/boltdb/bolt"
 )
 
 // NewServer configures and returns a Server.
@@ -47,12 +48,20 @@ func initRoutes(mx *mux.Router, formatter *render.Render) {
         }
     }
 
+    // 打开boltdb
+    db, err := bolt.Open("my.db", 0600, nil)
+    if err != nil {
+        fmt.Println(err)
+    }
+
     mx.HandleFunc("/api/",rootHandler(formatter)).Methods("GET")
-    mx.HandleFunc("/api/people/{id:[0-9]+}",peopleHandler(formatter)).Methods("GET")
-    mx.HandleFunc("/api/planets/{id:[0-9]+}",planetsHandler(formatter)).Methods("GET")
-    mx.HandleFunc("/api/films/{id:[0-9]+}",filmsHandler(formatter)).Methods("GET")
-    mx.HandleFunc("/api/species/{id:[0-9]+}",speciesHandler(formatter)).Methods("GET")
-    mx.HandleFunc("/api/vehicles/{id:[0-9]+}",vehiclesHandler(formatter)).Methods("GET")
-    mx.HandleFunc("/api/starships/{id:[0-9]+}",starshipsHandler(formatter)).Methods("GET")
+    mx.HandleFunc("/api/people",peopleHandler(formatter,db)).Methods("GET")
+    mx.HandleFunc("/api/people/schema",peopleSchemaHandler(formatter,db)).Methods("GET")
+    mx.HandleFunc("/api/people/{id:[0-9]+}/",peopleIdHandler(formatter,db)).Methods("GET")
+    mx.HandleFunc("/api/planets/{id:[0-9]+}/",planetsHandler(formatter,db)).Methods("GET")
+    mx.HandleFunc("/api/films/{id:[0-9]+}/",filmsHandler(formatter,db)).Methods("GET")
+    mx.HandleFunc("/api/species/{id:[0-9]+}/",speciesHandler(formatter,db)).Methods("GET")
+    mx.HandleFunc("/api/vehicles/{id:[0-9]+}/",vehiclesHandler(formatter,db)).Methods("GET")
+    mx.HandleFunc("/api/starships/{id:[0-9]+}/",starshipsHandler(formatter,db)).Methods("GET")
     
 }

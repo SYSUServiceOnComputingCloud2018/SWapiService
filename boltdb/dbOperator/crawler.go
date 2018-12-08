@@ -1,4 +1,5 @@
-package main
+// package main
+package dbOperator
 
 //负责从API将数据转移到数据库中
 import (
