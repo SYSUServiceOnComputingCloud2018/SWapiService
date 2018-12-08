@@ -11,7 +11,6 @@ import (
 	"github.com/peterhellberg/swapi"
 	"github.com/unrolled/render"
 )
-
 const (
 	ErrorResponseCode   = "404" // 错误响应code
 	SuccessResponseCode = "200"    // 正确响应code
@@ -33,7 +32,22 @@ type Peoples struct {
 func rootHandler(formatter *render.Render) http.HandlerFunc {
 
     return func(w http.ResponseWriter, req *http.Request) {
-		// 
+		
+		formatter.Text(w, http.StatusOK, "HTTP/1.0 "+SuccessResponseCode+" OK\n")
+		formatter.Text(w, http.StatusOK, "Content-Type: application/json\n")
+		formatter.JSON(w,http.StatusOK,struct{
+			Films string `json:"films"`
+			Peoples string `json:"people"`
+			Planets string `json:"planets"`
+			Species string `json:"species"`
+			Starships string `json:"starships"`
+			Vehicles string `json:"vehicles"`
+		}{Films:"https://swapi.co/api/films",
+		Peoples:"https://swapi.co/api/people",
+		Planets:"https://swapi.co/api/planets",
+		Species:"https://swapi.co/api/species",
+		Starships:"https://swapi.co/api/starships",
+		Vehicles:"https://swapi.co/api/vehicles"})
     }
 }
 
@@ -259,3 +273,14 @@ func starshipsHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 		}
 	}
 }
+
+// func WriteResponse(w http.ResponseWriter, code string, message string, data interface{}) {
+// 	w.Header().Set("Content-Type", "application/json")
+// 	resp := ResponseMessage{Code: code, Message: message, Data: data}
+// 	b, err := json.Marshal(resp)
+// 	if err != nil {
+// 		// logrus.Warnf("error when marshal response message, error:%v\n", err)
+// 		fmt.Println(err)
+// 	}
+// 	w.Write(b)
+// }
