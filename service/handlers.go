@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"errors"
 	"github.com/gorilla/mux"
-	"github.com/SwapiService/boltdb/dbOperator"
+	"github.com/SwapiService/dbOperator"
 	"github.com/peterhellberg/swapi"
 	"github.com/boltdb/bolt"
 

@@ -1,7 +1,5 @@
 # SWapi后端开发文档
 
-
-
 ## API 设计
 
 - API 必须规范，请在项目文档部分给出一个简洁的说明，参考 github v3 或 v4 overview
@@ -42,6 +40,23 @@
 
 
 ## 实现功能
+
+安装与使用（待测试）
+
+```bash
+$$ 各种依赖包
+go get github.com/codegangsta/negroni
+go get github.com/gorilla/mux
+go get github.com/unrolled/render
+go get github.com/boltdb/bolt
+go get github.com/peterhellberg/swapi
+```
+
+`go get github.com/SwapiService`
+
+`go run main.go`
+
+访问：`localhost:8080/api/`
 
 
 

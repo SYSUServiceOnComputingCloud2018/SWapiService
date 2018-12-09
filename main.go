@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/SWapiService/boltdb/service"
+	"github.com/SWapiService/service"
 	flag "github.com/spf13/pflag"
 )
 
