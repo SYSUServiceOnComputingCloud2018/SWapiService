@@ -1,15 +1,17 @@
 package service
 
 import (
-	"encoding/json"
+    "net/http"
+    "github.com/unrolled/render"
+    "encoding/json"
 	"fmt"
-	"net/http"
-
-	"github.com/SWapiService/boltdb/dbOperator"
-	"github.com/boltdb/bolt"
+	"strconv"
+	"errors"
 	"github.com/gorilla/mux"
+	"github.com/SWapiService/boltdb/dbOperator"
 	"github.com/peterhellberg/swapi"
-	"github.com/unrolled/render"
+	"github.com/boltdb/bolt"
+
 )
 const (
 	ErrorResponseCode   = "404" // 错误响应code
@@ -54,8 +56,9 @@ func rootHandler(formatter *render.Render) http.HandlerFunc {
 func peopleHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 	return func(w http.ResponseWriter, req *http.Request){
 		vars := req.URL.Query();
-		search, ok:= vars["search"]
-		if ok{
+		search, search_ok:= vars["search"]
+		page , page_ok := vars["page"]
+		if search_ok{
 			fmt.Printf("param 'search' string is [%s]\n", search[0])
 			v , err := dbOperator.GetElementsBySearchField(db,"Person",search[0])
 			users := Peoples{Count:len(v)}
@@ -78,7 +81,56 @@ func peopleHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+ErrorResponseCode+" Not Found\n")
 			}
 
-		} else {
+		} else if page_ok{
+			fmt.Printf("param 'page' string is [%s]\n", page)
+			page,err:=strconv.Atoi(page[0])
+			if err != nil{
+				fmt.Println(err)
+			}
+			v , err := dbOperator.GetAllResources(db,"Person")
+			users := Peoples{}
+			if page <= 0 {
+				err := errors.New("Page index <= 0.")
+				fmt.Println(err)
+				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+ErrorResponseCode+" Not Found\n")
+				return 
+			}
+			if (page-1)*10 >= len(v){
+				err := errors.New("Page index >= max_#page.")
+				fmt.Println(err)
+				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+ErrorResponseCode+" Not Found\n")
+				return 
+			}
+			if page*10 > len(v){
+				users.Count = len(v) % 10
+			} else {
+				users.Count = 10
+			}
+			if err == nil {
+				for i := (page-1)*10; i < (page-1)*10+users.Count; i++ {
+					var user swapi.Person
+					err = json.Unmarshal(v[i], &user)
+					if err != nil {
+						fmt.Println(err)
+					} else {
+						// fmt.Println(user)
+						users.Results = append(users.Results,user)
+					}
+				}
+				if users.Count == 10{
+					users.Next = "localhost:8080/api/people/?page="+strconv.Itoa(page+1)
+				}
+				if page != 1{
+					users.Previous = "localhost:8080/api/people/?page="+strconv.Itoa(page-1)
+				}
+				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+SuccessResponseCode+" OK\n")
+				formatter.Text(w, http.StatusOK, "Content-Type: application/json\n")
+				formatter.JSON(w,http.StatusOK,users)
+			} else{
+				fmt.Println(err)
+				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+ErrorResponseCode+" Not Found\n")
+			}
+		}else {
 			fmt.Printf("query param 'search' does not exist\n")
 			fmt.Printf("return all resources\n")
 			v , err := dbOperator.GetAllResources(db,"Person")
