@@ -44,12 +44,12 @@ func rootHandler(formatter *render.Render) http.HandlerFunc {
 			Species string `json:"species"`
 			Starships string `json:"starships"`
 			Vehicles string `json:"vehicles"`
-		}{Films:"http://localhost:8080/api/films",
-		Peoples:"http://localhost:8080/api/people",
-		Planets:"http://localhost:8080/api/planets",
-		Species:"http://localhost:8080/api/species",
-		Starships:"http://localhost:8080/api/starships",
-		Vehicles:"http://localhost:8080/api/vehicles"})
+		}{Films:"http://localhost:8080/api/films/",
+		Peoples:"http://localhost:8080/api/people/",
+		Planets:"http://localhost:8080/api/planets/",
+		Species:"http://localhost:8080/api/species/",
+		Starships:"http://localhost:8080/api/starships/",
+		Vehicles:"http://localhost:8080/api/vehicles/"})
     }
 }
 
