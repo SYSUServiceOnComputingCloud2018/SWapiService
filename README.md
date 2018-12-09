@@ -43,22 +43,26 @@
 
 安装与使用（待测试）
 
+- 各种依赖包
+
 ```bash
-$$ 各种依赖包
 go get github.com/codegangsta/negroni
 go get github.com/gorilla/mux
 go get github.com/unrolled/render
 go get github.com/boltdb/bolt
 go get github.com/peterhellberg/swapi
+go get github.com/SwapiService
 ```
 
-`go get github.com/SwapiService`
+- 运行
 
 `go run main.go`
 
-访问：`localhost:8080/api/`
+- 访问
 
+`localhost:8080/api/[optional]`
 
+-----
 
 ### 一、基本操作
 
@@ -90,7 +94,7 @@ go get github.com/peterhellberg/swapi
 
 `http://localhost:8080/api`
 
-response:
+页面响应 :
 
 ```go
 HTTP/1.0 200 OK
