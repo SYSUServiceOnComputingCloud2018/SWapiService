@@ -68,7 +68,7 @@ func personDownLoad(db *bolt.DB, id int) error {
 
 func filmDownload(db *bolt.DB, id int) error {
 	c := swapi.DefaultClient
-	//获得数据Person
+	//获得数据Film
 	films, err := c.Film(id)
 	if err != nil {
 		return err
@@ -105,7 +105,7 @@ func filmDownload(db *bolt.DB, id int) error {
 
 func starshipsDownload(db *bolt.DB, id int) error {
 	c := swapi.DefaultClient
-	//获得数据Person
+	//获得数据Starship
 	starships, err := c.Starship(id)
 	if err != nil {
 		return err
@@ -142,7 +142,7 @@ func starshipsDownload(db *bolt.DB, id int) error {
 
 func vehicleDownload(db *bolt.DB, id int) error {
 	c := swapi.DefaultClient
-	//获得数据Person
+	//获得数据Vehicle
 	vehicle, err := c.Vehicle(id)
 	if err != nil {
 		return err
@@ -179,7 +179,7 @@ func vehicleDownload(db *bolt.DB, id int) error {
 
 func planetDownload(db *bolt.DB, id int) error {
 	c := swapi.DefaultClient
-	//获得数据Person
+	//获得数据Planet
 	planet, err := c.Planet(id)
 	if err != nil {
 		return err
@@ -216,7 +216,7 @@ func planetDownload(db *bolt.DB, id int) error {
 
 func speciesDownload(db *bolt.DB, id int) error {
 	c := swapi.DefaultClient
-	//获得数据Person
+	//获得数据Species
 	species, err := c.Species(id)
 	if err != nil {
 		return err
