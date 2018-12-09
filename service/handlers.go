@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"errors"
 	"github.com/gorilla/mux"
-	"github.com/SwapiService/dbOperator"
+	"github.com/SYSUServiceOnComputingCloud2018/SwapiService/dbOperator"
 	"github.com/peterhellberg/swapi"
 	"github.com/boltdb/bolt"
 
@@ -44,12 +44,12 @@ func rootHandler(formatter *render.Render) http.HandlerFunc {
 			Species string `json:"species"`
 			Starships string `json:"starships"`
 			Vehicles string `json:"vehicles"`
-		}{Films:"http://localhost:8080/api/films/",
-		Peoples:"http://localhost:8080/api/people/",
-		Planets:"http://localhost:8080/api/planets/",
-		Species:"http://localhost:8080/api/species/",
-		Starships:"http://localhost:8080/api/starships/",
-		Vehicles:"http://localhost:8080/api/vehicles/"})
+		}{Films:"http://localhost:3000/api/films/",
+		Peoples:"http://localhost:3000/api/people/",
+		Planets:"http://localhost:3000/api/planets/",
+		Species:"http://localhost:3000/api/species/",
+		Starships:"http://localhost:3000/api/starships/",
+		Vehicles:"http://localhost:3000/api/vehicles/"})
     }
 }
 
@@ -132,10 +132,10 @@ func peopleHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 					}
 				}
 				if users.Count == 10{
-					users.Next = "localhost:8080/api/people/?page="+strconv.Itoa(page+1)
+					users.Next = "localhost:3000/api/people/?page="+strconv.Itoa(page+1)
 				}
 				if page != 1{
-					users.Previous = "localhost:8080/api/people/?page="+strconv.Itoa(page-1)
+					users.Previous = "localhost:3000/api/people/?page="+strconv.Itoa(page-1)
 				}
 				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+SuccessResponseCode+" OK\n")
 				formatter.Text(w, http.StatusOK, "Content-Type: application/json\n")

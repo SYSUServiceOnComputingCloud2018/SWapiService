@@ -51,16 +51,18 @@ go get github.com/gorilla/mux
 go get github.com/unrolled/render
 go get github.com/boltdb/bolt
 go get github.com/peterhellberg/swapi
-go get github.com/SwapiService
+go get github.com/SYSUServiceOnComputingCloud2018/SwapiService
 ```
 
 - 运行
+
+`cd src/github.com/SYSUServiceOnComputingCloud2018/SWapiService`
 
 `go run main.go`
 
 - 访问
 
-`localhost:8080/api/[optional]`
+`localhost:3000/api/[optional]`
 
 -----
 
@@ -68,7 +70,7 @@ go get github.com/SwapiService
 
 1. base url（所以其他请求的url必须满足此前缀）
 
-   `HOST/api`like`localhost:8080/api/`（服务端默认在本地8080端口监听，或者可以传入端口参数，详见main.go）
+   `HOST/api`like`localhost:3000/api/`（服务端默认在本地3000端口监听，或者可以传入端口参数，详见main.go）
 
 2. 请求频率限制： 10,000 API request per day
 
@@ -92,7 +94,7 @@ go get github.com/SwapiService
 
 指令：
 
-`http://localhost:8080/api`
+`http://localhost:3000/api`
 
 页面响应 :
 
@@ -100,12 +102,12 @@ go get github.com/SwapiService
 HTTP/1.0 200 OK
 Content-Type: application/json
 {
-    "films": "http://localhost:8080/api/films/",
-    "people": "http://localhost:8080/api/people/",
-    "planets": "http://localhost:8080/api/planets/",
-    "species": "http://localhost:8080/api/species/",
-    "starships": "http://localhost:8080/api/starships/",
-    "vehicles": "http://localhost:8080/api/vehicles/"
+    "films": "http://localhost:3000/api/films/",
+    "people": "http://localhost:3000/api/people/",
+    "planets": "http://localhost:3000/api/planets/",
+    "species": "http://localhost:3000/api/species/",
+    "starships": "http://localhost:3000/api/starships/",
+    "vehicles": "http://localhost:3000/api/vehicles/"
 }
 ```
 
@@ -115,7 +117,7 @@ Content-Type: application/json
 
 - 指令 ：
 
-`http://localhost:8080/api/people/1/`
+`http://localhost:3000/api/people/1/`
 
 - 页面响应 :
 
@@ -162,7 +164,7 @@ Content-Type: application/json
 
 - 指令：
 
-  `http://localhost:8080/api/people/?search=H`
+  `http://localhost:3000/api/people/?search=H`
 
 - 页面响应：
 
@@ -234,7 +236,7 @@ Content-Type: application/json
 
 - 指令：
 
-  `http://localhost:8080/api/people/`
+  `http://localhost:3000/api/people/`
 
 - 支持分页输出（默认第一页）
 
@@ -243,7 +245,7 @@ HTTP/1.0 200 OK
 Content-Type: application/json
 {
   "count": 10,
-  "next": "localhost:8080/api/people/?page=2",
+  "next": "localhost:3000/api/people/?page=2",
   "previous": "",
   "results": [
   	...
@@ -253,7 +255,7 @@ Content-Type: application/json
 
 - 指令：
 
-  `http://localhost:8080/api/people/?page=9`
+  `http://localhost:3000/api/people/?page=9`
 
 ```json
 HTTP/1.0 200 OK
@@ -261,7 +263,7 @@ Content-Type: application/json
 {
   "count": 7,
   "next": "",
-  "previous": "localhost:8080/api/people/?page=8",
+  "previous": "localhost:3000/api/people/?page=8",
   "results": [
     ...
   ]
@@ -274,7 +276,7 @@ Content-Type: application/json
 
 - 指令：
 
-  `http://localhost:8080/api/people/schema`
+  `http://localhost:3000/api/people/schema`
 
 - 页面响应：
 
@@ -397,7 +399,7 @@ Content-Type: application/json
 
 - 指令：
 
-`http://localhost:8080/api/planets/1/`
+`http://localhost:3000/api/planets/1/`
 
 - 页面响应 :
 
@@ -445,7 +447,7 @@ Content-Type: application/json
 
 - 指令
 
-`http://localhost:8080/api/films/1/`
+`http://localhost:3000/api/films/1/`
 
 - 页面响应
 
@@ -518,7 +520,7 @@ Content-Type: application/json
 
 - 指令
 
-`http://localhost:8080/api/vehicles/4/`
+`http://localhost:3000/api/vehicles/4/`
 
 - 页面响应
 
@@ -554,7 +556,7 @@ Content-Type: application/json
 
 - 指令
 
-`http://localhost:8080/api/species/1/`
+`http://localhost:3000/api/species/1/`
 
 - 页面响应
 
@@ -631,7 +633,7 @@ Content-Type: application/json
 
 - 指令 :
 
-  `http://localhost:8080/api/starships/3/`
+  `http://localhost:3000/api/starships/3/`
 
 - 页面响应 :
 

@@ -3,12 +3,12 @@ package main
 import (
 	"os"
 
-	"github.com/SWapiService/service"
+	"github.com/SYSUServiceOnComputingCloud2018/SWapiService/service"
 	flag "github.com/spf13/pflag"
 )
 
 const (
-	PORT string = "8080"
+	PORT string = "3000"
 )
 
 func main() {
