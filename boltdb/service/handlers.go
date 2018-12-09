@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"errors"
 	"github.com/gorilla/mux"
-	"github.com/SWapiService/boltdb/dbOperator"
+	"github.com/SwapiService/boltdb/dbOperator"
 	"github.com/peterhellberg/swapi"
 	"github.com/boltdb/bolt"
 
@@ -44,12 +44,12 @@ func rootHandler(formatter *render.Render) http.HandlerFunc {
 			Species string `json:"species"`
 			Starships string `json:"starships"`
 			Vehicles string `json:"vehicles"`
-		}{Films:"https://swapi.co/api/films",
-		Peoples:"https://swapi.co/api/people",
-		Planets:"https://swapi.co/api/planets",
-		Species:"https://swapi.co/api/species",
-		Starships:"https://swapi.co/api/starships",
-		Vehicles:"https://swapi.co/api/vehicles"})
+		}{Films:"http://localhost:8080/api/films",
+		Peoples:"http://localhost:8080/api/people",
+		Planets:"http://localhost:8080/api/planets",
+		Species:"http://localhost:8080/api/species",
+		Starships:"http://localhost:8080/api/starships",
+		Vehicles:"http://localhost:8080/api/vehicles"})
     }
 }
 
@@ -57,7 +57,7 @@ func peopleHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 	return func(w http.ResponseWriter, req *http.Request){
 		vars := req.URL.Query();
 		search, search_ok:= vars["search"]
-		page , page_ok := vars["page"]
+		page_param , page_ok := vars["page"]
 		if search_ok{
 			fmt.Printf("param 'search' string is [%s]\n", search[0])
 			v , err := dbOperator.GetElementsBySearchField(db,"Person",search[0])
@@ -81,14 +81,26 @@ func peopleHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+ErrorResponseCode+" Not Found\n")
 			}
 
-		} else if page_ok{
-			fmt.Printf("param 'page' string is [%s]\n", page)
-			page,err:=strconv.Atoi(page[0])
-			if err != nil{
-				fmt.Println(err)
+		} else{
+			// 得到query变量
+			page := 0
+			if page_ok {
+				fmt.Printf("param 'page' string is [%s]\n", page_param)
+				page1,err :=strconv.Atoi(page_param[0])
+				if err != nil{
+					fmt.Println(err)
+				}
+				page = page1
+			} else {
+				fmt.Printf("query param 'page' does not exist\n")
+				fmt.Printf("The default page index is 1\n")
+				page = 1
 			}
+			// 读取数据库
 			v , err := dbOperator.GetAllResources(db,"Person")
 			users := Peoples{}
+
+			// 判断页码逻辑
 			if page <= 0 {
 				err := errors.New("Page index <= 0.")
 				fmt.Println(err)
@@ -106,6 +118,8 @@ func peopleHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 			} else {
 				users.Count = 10
 			}
+
+			
 			if err == nil {
 				for i := (page-1)*10; i < (page-1)*10+users.Count; i++ {
 					var user swapi.Person
@@ -122,29 +136,6 @@ func peopleHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 				}
 				if page != 1{
 					users.Previous = "localhost:8080/api/people/?page="+strconv.Itoa(page-1)
-				}
-				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+SuccessResponseCode+" OK\n")
-				formatter.Text(w, http.StatusOK, "Content-Type: application/json\n")
-				formatter.JSON(w,http.StatusOK,users)
-			} else{
-				fmt.Println(err)
-				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+ErrorResponseCode+" Not Found\n")
-			}
-		}else {
-			fmt.Printf("query param 'search' does not exist\n")
-			fmt.Printf("return all resources\n")
-			v , err := dbOperator.GetAllResources(db,"Person")
-			users := Peoples{Count:len(v)}
-			if err == nil {
-				for i := 0; i < len(v); i++ {
-					var user swapi.Person
-					err = json.Unmarshal(v[i], &user)
-					if err != nil {
-						fmt.Println(err)
-					} else {
-						// fmt.Println(user)
-						users.Results = append(users.Results,user)
-					}
 				}
 				formatter.Text(w, http.StatusOK, "HTTP/1.0 "+SuccessResponseCode+" OK\n")
 				formatter.Text(w, http.StatusOK, "Content-Type: application/json\n")

@@ -41,15 +41,15 @@
 
 
 
-## 实现功能（未完...）
+## 实现功能
 
-j
+
 
 ### 一、基本操作
 
 1. base url（所以其他请求的url必须满足此前缀）
 
-   `HOST/api`like`localhost:8080/api/`（服务端默认在本地8080端口监听，或者可以传入端口参数，详见boltdb/main.go）
+   `HOST/api`like`localhost:8080/api/`（服务端默认在本地8080端口监听，或者可以传入端口参数，详见main.go）
 
 2. 请求频率限制： 10,000 API request per day
 
@@ -57,7 +57,9 @@ j
 
 4. query查询：`api/people/?search=r2`，使用case-insensitive partial matches返回所有符合条件的
 
-5. 使用JSON或者Wookiee格式输出（JSON为默认，Wookiee需要加query`/api/planets/1/?format=wookiee`）
+5. 使用JSON格式输出
+
+6. 支持分页输出所有资源
 
 
 
@@ -79,12 +81,12 @@ response:
 HTTP/1.0 200 OK
 Content-Type: application/json
 {
-    "films": "https://swapi.co/api/films/",
-    "people": "https://swapi.co/api/people/",
-    "planets": "https://swapi.co/api/planets/",
-    "species": "https://swapi.co/api/species/",
-    "starships": "https://swapi.co/api/starships/",
-    "vehicles": "https://swapi.co/api/vehicles/"
+    "films": "http://localhost:8080/api/films/",
+    "people": "http://localhost:8080/api/people/",
+    "planets": "http://localhost:8080/api/planets/",
+    "species": "http://localhost:8080/api/species/",
+    "starships": "http://localhost:8080/api/starships/",
+    "vehicles": "http://localhost:8080/api/vehicles/"
 }
 ```
 
@@ -215,9 +217,37 @@ Content-Type: application/json
 
   `http://localhost:8080/api/people/`
 
-- 需要支持分页输出
+- 支持分页输出（默认第一页）
 
+```json
+HTTP/1.0 200 OK
+Content-Type: application/json
+{
+  "count": 10,
+  "next": "localhost:8080/api/people/?page=2",
+  "previous": "",
+  "results": [
+  	...
+   ]
+}
+```
 
+- 指令：
+
+  `http://localhost:8080/api/people/?page=9`
+
+```json
+HTTP/1.0 200 OK
+Content-Type: application/json
+{
+  "count": 7,
+  "next": "",
+  "previous": "localhost:8080/api/people/?page=8",
+  "results": [
+    ...
+  ]
+}
+```
 
 
 
