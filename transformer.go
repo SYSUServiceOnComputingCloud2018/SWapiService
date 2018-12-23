@@ -45,7 +45,7 @@ func main(){
 	}
 	fmt.Println("connnect success")
 
-	/*
+	
 	//测试插入数据
 	tx, err := DB.Begin()
     if err != nil{
@@ -65,11 +65,8 @@ func main(){
     tx.Commit()
 	//获得上一个插入自增的id
 	fmt.Println(res.LastInsertId())
-	*/
 	
-
-
-
+	/*
 	//测试查询数据
 	var key = "16340226"
 	rows, err := DB.Query(" SELECT value FROM people where `key`= ? ",key)
