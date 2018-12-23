@@ -17,7 +17,7 @@ import(
 
 func main(){
 
-
+	//设置个人库地址
 	const (
 		userName = "root"
 		password = "123456"
@@ -25,6 +25,8 @@ func main(){
 		port = "3306"
 		dbName = "wangyx"
 	)
+
+
 	//Db数据库连接池
 	var DB *sql.DB
 	
@@ -66,7 +68,7 @@ func main(){
 	//获得上一个插入自增的id
 	fmt.Println(res.LastInsertId())
 	
-	/*
+	
 	//测试查询数据
 	var key = "16340226"
 	rows, err := DB.Query(" SELECT value FROM people where `key`= ? ",key)
