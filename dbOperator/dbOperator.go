@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"strings"
-
 	"github.com/boltdb/bolt"
 	"github.com/peterhellberg/swapi"
 )
