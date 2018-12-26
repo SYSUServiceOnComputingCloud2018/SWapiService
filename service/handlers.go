@@ -10,7 +10,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/SYSUServiceOnComputingCloud2018/SwapiService/dbOperator"
 	"github.com/peterhellberg/swapi"
-	"github.com/boltdb/bolt"
+	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
 
 )
 const (
@@ -53,7 +54,7 @@ func rootHandler(formatter *render.Render) http.HandlerFunc {
     }
 }
 
-func peopleHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
+func peopleHandler(formatter *render.Render,db *sql.DB) http.HandlerFunc{
 	return func(w http.ResponseWriter, req *http.Request){
 		vars := req.URL.Query();
 		search, search_ok:= vars["search"]
@@ -148,7 +149,7 @@ func peopleHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 	}
 }
 
-func peopleSchemaHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
+func peopleSchemaHandler(formatter *render.Render,db *sql.DB) http.HandlerFunc{
 	return func(w http.ResponseWriter, req *http.Request){
 
 		// 输出schema
@@ -167,7 +168,7 @@ func peopleSchemaHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 	}
 }
 	
-func peopleIdHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
+func peopleIdHandler(formatter *render.Render,db *sql.DB) http.HandlerFunc{
 	
 	return func(w http.ResponseWriter, req *http.Request){
 		
@@ -196,7 +197,7 @@ func peopleIdHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 	}
 }
 
-func planetsHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
+func planetsHandler(formatter *render.Render,db *sql.DB) http.HandlerFunc{
   
 	return func(w http.ResponseWriter, req *http.Request) {
 
@@ -226,7 +227,7 @@ func planetsHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 	}
 }
 
-func filmsHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
+func filmsHandler(formatter *render.Render,db *sql.DB) http.HandlerFunc{
   
 	return func(w http.ResponseWriter, req *http.Request) {
 
@@ -256,7 +257,7 @@ func filmsHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 	}
 }
 
-func speciesHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
+func speciesHandler(formatter *render.Render,db *sql.DB) http.HandlerFunc{
   
 	return func(w http.ResponseWriter, req *http.Request) {
 		
@@ -286,7 +287,7 @@ func speciesHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 	}
 }
 
-func vehiclesHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
+func vehiclesHandler(formatter *render.Render,db *sql.DB) http.HandlerFunc{
   
 	return func(w http.ResponseWriter, req *http.Request) {
 
@@ -316,7 +317,7 @@ func vehiclesHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
 	}
 }
 
-func starshipsHandler(formatter *render.Render,db *bolt.DB) http.HandlerFunc{
+func starshipsHandler(formatter *render.Render,db *sql.DB) http.HandlerFunc{
   
 	return func(w http.ResponseWriter, req *http.Request) {
 

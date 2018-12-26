@@ -66,54 +66,76 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	rows, err := db.Query(" SELECT value FROM Person")
+
+	blockNameSet := []string{"Person", "Starship", "Planet", "Film", "Species", "Vehicle"}
+
+	for _, blockName := range blockNameSet {
+		fmt.Println("Solving with" + blockName)
+		_, err = db.Exec("CREATE TABLE IF NOT EXISTS `" + blockName + "` (`key` VARCHAR(255),`value` TEXT)")
+		if err != nil {
+			panic(err)
+		}
+		err := boltdb.View(func(tx *bolt.Tx) error {
+			bucket := tx.Bucket([]byte(blockName))
+
+			c := bucket.Cursor()
+			tx2, err := db.Begin()
+			if err != nil {
+				panic(err)
+			}
+			for k, v := c.First(); k != nil; k, v = c.Next() {
+				fmt.Printf("key=%s", k)
+				stmt, err := tx2.Prepare("INSERT INTO " + blockName + " (`key`, `value`) VALUES (?, ?)")
+				if err != nil {
+					fmt.Println("Prepare fail")
+					panic(err)
+				}
+				//将参数传递到sql语句中并且执行
+				_, err = stmt.Exec(k, v)
+				if err != nil {
+					fmt.Println("Exec fail")
+					panic(err)
+				}
+			}
+			tx2.Commit()
+			return nil
+		})
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS `Schema` (`key` VARCHAR(255),`value` TEXT)")
 	if err != nil {
 		panic(err)
 	}
-	for rows.Next() {
-		var value string
-		if err := rows.Scan(&value); err != nil {
+	err = boltdb.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte("Schema"))
+
+		c := bucket.Cursor()
+		tx2, err := db.Begin()
+		if err != nil {
 			panic(err)
 		}
-		fmt.Println(value)
-	}
-
-	/*
-		blockNameSet := []string{"Person", "Starship", "Planet", "Film", "Species", "Vehicle"}
-		for _, blockName := range blockNameSet {
-			fmt.Println("Solving with" + blockName)
-			_, err = db.Exec("CREATE TABLE IF NOT EXISTS `" + blockName + "` (`key` VARCHAR(255),`value` TEXT)")
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			fmt.Printf("key=%s", k)
+			stmt, err := tx2.Prepare("INSERT INTO `Schema` (`key`, `value`) VALUES (?, ?)")
 			if err != nil {
+				fmt.Println("Prepare fail")
 				panic(err)
 			}
-			err := boltdb.View(func(tx *bolt.Tx) error {
-				bucket := tx.Bucket([]byte(blockName))
-
-				c := bucket.Cursor()
-				tx2, err := db.Begin()
-				if err != nil {
-					panic(err)
-				}
-				for k, v := c.First(); k != nil; k, v = c.Next() {
-					fmt.Printf("key=%s", k)
-					stmt, err := tx2.Prepare("INSERT INTO " + blockName + " (`key`, `value`) VALUES (?, ?)")
-					if err != nil {
-						fmt.Println("Prepare fail")
-						panic(err)
-					}
-					//将参数传递到sql语句中并且执行
-					_, err = stmt.Exec(k, v)
-					if err != nil {
-						fmt.Println("Exec fail")
-						panic(err)
-					}
-				}
-				tx2.Commit()
-				return nil
-			})
+			//将参数传递到sql语句中并且执行
+			_, err = stmt.Exec(k, v)
 			if err != nil {
+				fmt.Println("Exec fail")
 				panic(err)
 			}
 		}
-	*/
+		tx2.Commit()
+		return nil
+	})
+	if err != nil {
+		panic(err)
+	}
+
 }
