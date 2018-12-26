@@ -3,110 +3,119 @@ package dbOperator
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"strings"
+
+	"database/sql"
+
 	"github.com/boltdb/bolt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/peterhellberg/swapi"
 )
 
-func GetElementById(db *bolt.DB, blockName string, id string) ([]byte, error) {
-	var codedata []byte
-	err := db.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket([]byte(blockName))
-		codedata = bucket.Get([]byte(id))
-		return nil
-	})
+func GetElementById(db *sql.DB, tablename string, key string) ([]byte, error) {
+	rows, err := db.Query(" SELECT value FROM "+tablename+" where `key`= ? ", key)
 	if err != nil {
 		return []byte(""), err
-	} else if len(codedata) == 0 {
-		return []byte(""), errors.New("Empty data")
+	}
+	for rows.Next() {
+		var value string
+		if err := rows.Scan(&value); err != nil {
+			log.Fatal(err)
+		}
+		return []byte(value), nil
 	}
 
-	return codedata, nil
+	return []byte(""), err
 }
 
-func GetElementsBySearchField(db *bolt.DB, blockName string, value string) ([][]byte, error) {
+func GetElementsBySearchField(db *sql.DB, tablename string, value string) ([][]byte, error) {
 	storeData := make([][]byte, 0)
-	err := db.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket([]byte(blockName))
-		c := bucket.Cursor()
 
-		for k, v := c.First(); k != nil; k, v = c.Next() {
+	rows, err := db.Query(" SELECT value FROM " + tablename)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var value string
+		if err := rows.Scan(&v); err != nil {
+			return nil, err
+		}
+		v := []byte(value)
 
-			switch blockName {
-			case "Person":
-				{
-					var data swapi.Person
-					err := json.Unmarshal(v, &data)
-					if err != nil {
-						return err
-					}
-					if strings.Contains(data.Name, value) {
-						storeData = append(storeData, v)
-					}
+		switch blockName {
+		case "Person":
+			{
+				var data swapi.Person
+				err := json.Unmarshal(v, &data)
+				if err != nil {
+					return nil, err
 				}
-			case "Film":
-				{
-					var data swapi.Film
-					err := json.Unmarshal(v, &data)
-					if err != nil {
-						return err
-					}
-					if strings.Contains(data.Title, value) {
-						storeData = append(storeData, v)
-					}
+				if strings.Contains(data.Name, value) {
+					storeData = append(storeData, v)
 				}
-			case "Starship":
-				{
-					var data swapi.Starship
-					err := json.Unmarshal(v, &data)
-					if err != nil {
-						return err
-					}
-					if strings.Contains(data.Name, value) {
-						storeData = append(storeData, v)
-					} else if strings.Contains(data.Model, value) {
-						storeData = append(storeData, v)
-					}
+			}
+		case "Film":
+			{
+				var data swapi.Film
+				err := json.Unmarshal(v, &data)
+				if err != nil {
+					return nil, err
 				}
-			case "Vehicle":
-				{
-					var data swapi.Vehicle
-					err := json.Unmarshal(v, &data)
-					if err != nil {
-						return err
-					}
-					if strings.Contains(data.Name, value) {
-						storeData = append(storeData, v)
-					} else if strings.Contains(data.Model, value) {
-						storeData = append(storeData, v)
-					}
+				if strings.Contains(data.Title, value) {
+					storeData = append(storeData, v)
 				}
-			case "Planet":
-				{
-					var data swapi.Planet
-					err := json.Unmarshal(v, &data)
-					if err != nil {
-						return err
-					}
-					if strings.Contains(data.Name, value) {
-						storeData = append(storeData, v)
-					}
+			}
+		case "Starship":
+			{
+				var data swapi.Starship
+				err := json.Unmarshal(v, &data)
+				if err != nil {
+					return nil, err
 				}
-			case "Species":
-				{
-					var data swapi.Species
-					err := json.Unmarshal(v, &data)
-					if err != nil {
-						return err
-					}
-					if strings.Contains(data.Name, value) {
-						storeData = append(storeData, v)
-					}
+				if strings.Contains(data.Name, value) {
+					storeData = append(storeData, v)
+				} else if strings.Contains(data.Model, value) {
+					storeData = append(storeData, v)
+				}
+			}
+		case "Vehicle":
+			{
+				var data swapi.Vehicle
+				err := json.Unmarshal(v, &data)
+				if err != nil {
+					return nil, err
+				}
+				if strings.Contains(data.Name, value) {
+					storeData = append(storeData, v)
+				} else if strings.Contains(data.Model, value) {
+					storeData = append(storeData, v)
+				}
+			}
+		case "Planet":
+			{
+				var data swapi.Planet
+				err := json.Unmarshal(v, &data)
+				if err != nil {
+					return nil, err
+				}
+				if strings.Contains(data.Name, value) {
+					storeData = append(storeData, v)
+				}
+			}
+		case "Species":
+			{
+				var data swapi.Species
+				err := json.Unmarshal(v, &data)
+				if err != nil {
+					return nil, err
+				}
+				if strings.Contains(data.Name, value) {
+					storeData = append(storeData, v)
 				}
 			}
 		}
-		return nil
-	})
+	}
 
 	if err == nil {
 		return storeData, nil
@@ -117,17 +126,21 @@ func GetElementsBySearchField(db *bolt.DB, blockName string, value string) ([][]
 	}
 }
 
-func GetAllResources(db *bolt.DB, blockName string) ([][]byte, error) {
+func GetAllResources(db *sql.DB, tablename string) ([][]byte, error) {
 	storeData := make([][]byte, 0)
-	err := db.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket([]byte(blockName))
-		c := bucket.Cursor()
 
-		for k, v := c.First(); k != nil; k, v = c.Next() {
-			storeData = append(storeData, v)
+	rows, err := db.Query(" SELECT value FROM "+tablename+" where `key`= ? ", key)
+	if err != nil {
+		return []byte(""), err
+	}
+	for rows.Next() {
+		var value string
+		if err := rows.Scan(&value); err != nil {
+			log.Fatal(err)
 		}
-		return nil
-	})
+		v := []byte(value)
+		storeData = append(storeData, v)
+	}
 
 	if err == nil {
 		return storeData, nil
@@ -140,10 +153,19 @@ func GetAllResources(db *bolt.DB, blockName string) ([][]byte, error) {
 
 func GetSchemaByBucket(db *bolt.DB, blockName string) ([]byte, error) {
 	var codedata []byte
-	err := db.View(func(tx *bolt.Tx) error{
-		bucket := tx.Bucket([]byte("Schema"))
-		codedata = bucket.Get([]byte(blockName))
-		return nil
-	})
-	return codedata,err
+
+	rows, err := db.Query(" SELECT value FROM Schema where `key`= ? ", blockName)
+	if err != nil {
+		return []byte(""), err
+	}
+	for rows.Next() {
+		var value string
+		if err := rows.Scan(&value); err != nil {
+			log.Fatal(err)
+		}
+		v := []byte(value)
+		return v, nil
+	}
+
+	return []byte(""), err
 }
