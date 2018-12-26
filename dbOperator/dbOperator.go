@@ -8,7 +8,6 @@ import (
 
 	"database/sql"
 
-	"github.com/boltdb/bolt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/peterhellberg/swapi"
 )
@@ -37,13 +36,13 @@ func GetElementsBySearchField(db *sql.DB, tablename string, value string) ([][]b
 		return nil, err
 	}
 	for rows.Next() {
-		var value string
-		if err := rows.Scan(&v); err != nil {
+		var vv string
+		if err := rows.Scan(&vv); err != nil {
 			return nil, err
 		}
-		v := []byte(value)
+		v := []byte(vv)
 
-		switch blockName {
+		switch tablename {
 		case "Person":
 			{
 				var data swapi.Person
@@ -129,9 +128,9 @@ func GetElementsBySearchField(db *sql.DB, tablename string, value string) ([][]b
 func GetAllResources(db *sql.DB, tablename string) ([][]byte, error) {
 	storeData := make([][]byte, 0)
 
-	rows, err := db.Query(" SELECT value FROM "+tablename+" where `key`= ? ", key)
+	rows, err := db.Query(" SELECT value FROM " + tablename)
 	if err != nil {
-		return []byte(""), err
+		return storeData, err
 	}
 	for rows.Next() {
 		var value string
@@ -151,10 +150,9 @@ func GetAllResources(db *sql.DB, tablename string) ([][]byte, error) {
 	}
 }
 
-func GetSchemaByBucket(db *bolt.DB, blockName string) ([]byte, error) {
-	var codedata []byte
+func GetSchemaByBucket(db *sql.DB, blockName string) ([]byte, error) {
 
-	rows, err := db.Query(" SELECT value FROM Schema where `key`= ? ", blockName)
+	rows, err := db.Query(" SELECT value FROM `Schema` where `key`= ? ", blockName)
 	if err != nil {
 		return []byte(""), err
 	}

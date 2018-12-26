@@ -13,7 +13,6 @@ import (
 	"fmt"
 	"log"
 
-	"./dbOperator"
 	"github.com/boltdb/bolt"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -57,68 +56,26 @@ func main() {
 	}
 
 	//创建并使用sql数据库
-	/*
-		_, err = db.Exec("CREATE DATABASE " + dbName)
-		if err != nil {
-			panic(err)
-		}*/
+
+	_, err = db.Exec("CREATE DATABASE " + dbName)
+	if err != nil {
+		panic(err)
+	}
 
 	_, err = db.Exec("USE " + dbName)
 	if err != nil {
 		panic(err)
 	}
 
-	allRes, err := dbOperator.GetElementsBySearchField(db, "Person", "walker")
-	if err != nil {
-		panic(err)
-	}
-	for _, v := range allRes {
-		str := string(v)
-		fmt.Println(str)
-	}
-	/*
-		blockNameSet := []string{"Person", "Starship", "Planet", "Film", "Species", "Vehicle"}
+	blockNameSet := []string{"Person", "Starship", "Planet", "Film", "Species", "Vehicle"}
 
-		for _, blockName := range blockNameSet {
-			_, err = db.Exec("CREATE TABLE IF NOT EXISTS `" + blockName + "` (`key` VARCHAR(255),`value` TEXT)")
-			if err != nil {
-				panic(err)
-			}
-			err := boltdb.View(func(tx *bolt.Tx) error {
-				bucket := tx.Bucket([]byte(blockName))
-
-				c := bucket.Cursor()
-				tx2, err := db.Begin()
-				if err != nil {
-					panic(err)
-				}
-				for k, v := c.First(); k != nil; k, v = c.Next() {
-					stmt, err := tx2.Prepare("INSERT INTO " + blockName + " (`key`, `value`) VALUES (?, ?)")
-					if err != nil {
-						fmt.Println("Prepare fail")
-						panic(err)
-					}
-					//将参数传递到sql语句中并且执行
-					_, err = stmt.Exec(k, v)
-					if err != nil {
-						fmt.Println("Exec fail")
-						panic(err)
-					}
-				}
-				tx2.Commit()
-				return nil
-			})
-			if err != nil {
-				panic(err)
-			}
-		}
-
-		_, err = db.Exec("CREATE TABLE IF NOT EXISTS `Schema` (`key` VARCHAR(255),`value` TEXT)")
+	for _, blockName := range blockNameSet {
+		_, err = db.Exec("CREATE TABLE IF NOT EXISTS `" + blockName + "` (`key` VARCHAR(255),`value` TEXT)")
 		if err != nil {
 			panic(err)
 		}
-		err = boltdb.View(func(tx *bolt.Tx) error {
-			bucket := tx.Bucket([]byte("Schema"))
+		err := boltdb.View(func(tx *bolt.Tx) error {
+			bucket := tx.Bucket([]byte(blockName))
 
 			c := bucket.Cursor()
 			tx2, err := db.Begin()
@@ -126,7 +83,7 @@ func main() {
 				panic(err)
 			}
 			for k, v := c.First(); k != nil; k, v = c.Next() {
-				stmt, err := tx2.Prepare("INSERT INTO `Schema` (`key`, `value`) VALUES (?, ?)")
+				stmt, err := tx2.Prepare("INSERT INTO " + blockName + " (`key`, `value`) VALUES (?, ?)")
 				if err != nil {
 					fmt.Println("Prepare fail")
 					panic(err)
@@ -143,6 +100,39 @@ func main() {
 		})
 		if err != nil {
 			panic(err)
-		}*/
+		}
+	}
+
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS `Schema` (`key` VARCHAR(255),`value` TEXT)")
+	if err != nil {
+		panic(err)
+	}
+	err = boltdb.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte("Schema"))
+
+		c := bucket.Cursor()
+		tx2, err := db.Begin()
+		if err != nil {
+			panic(err)
+		}
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			stmt, err := tx2.Prepare("INSERT INTO `Schema` (`key`, `value`) VALUES (?, ?)")
+			if err != nil {
+				fmt.Println("Prepare fail")
+				panic(err)
+			}
+			//将参数传递到sql语句中并且执行
+			_, err = stmt.Exec(k, v)
+			if err != nil {
+				fmt.Println("Exec fail")
+				panic(err)
+			}
+		}
+		tx2.Commit()
+		return nil
+	})
+	if err != nil {
+		panic(err)
+	}
 
 }
