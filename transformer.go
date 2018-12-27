@@ -5,6 +5,9 @@ MySQL数据结构
 	七个表：People,Planet,Starships,Film,Species,Vehicles,Schema
 	七个表，表有两个项目：key和value
 docker run -p 3306:3306 --name mymysql -v $PWD/conf:/etc/mysql/conf.d -v $PWD/logs:/logs -v $PWD/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
+
+使用Dockerfile
+docker run --name=mysqlserver -p 3306:3306 -d centos6:mysql
 */
 package main
 
@@ -36,7 +39,7 @@ func main() {
 
 	//打开数据库,前者是驱动名，所以要导入： _ "github.com/go-sql-driver/mysql"
 	//DB, err := sql.Open("mysql", path)
-	db, err := sql.Open("mysql", "root:123456@tcp(0.0.0.0:32768)/")
+	db, err := sql.Open("mysql", "root:123456@tcp(0.0.0.0:3306)/")
 	if err != nil {
 		panic(err)
 	}
@@ -71,9 +74,11 @@ func main() {
 
 	for _, blockName := range blockNameSet {
 		_, err = db.Exec("CREATE TABLE IF NOT EXISTS `" + blockName + "` (`key` VARCHAR(255),`value` TEXT)")
+		fmt.Println("Create table " + blockName)
 		if err != nil {
 			panic(err)
 		}
+		fmt.Println("Create table over " + blockName)
 		err := boltdb.View(func(tx *bolt.Tx) error {
 			bucket := tx.Bucket([]byte(blockName))
 
