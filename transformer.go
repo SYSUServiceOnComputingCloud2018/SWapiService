@@ -36,7 +36,7 @@ func main() {
 
 	//打开数据库,前者是驱动名，所以要导入： _ "github.com/go-sql-driver/mysql"
 	//DB, err := sql.Open("mysql", path)
-	db, err := sql.Open("mysql", "root:123456@tcp(0.0.0.0:3306)/")
+	db, err := sql.Open("mysql", "root:123456@tcp(0.0.0.0:32768)/")
 	if err != nil {
 		panic(err)
 	}
