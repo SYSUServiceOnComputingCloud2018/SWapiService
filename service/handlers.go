@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"errors"
 	"github.com/gorilla/mux"
-	"github.com/SYSUServiceOnComputingCloud2018/SwapiService/dbOperator"
+	"github.com/SYSUServiceOnComputingCloud2018/SWapiService/dbOperator"
 	"github.com/peterhellberg/swapi"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
